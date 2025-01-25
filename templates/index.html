@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        .chat-box {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            height: 400px;
+            overflow-y: scroll;
+        }
+
+        .user-message,
+        .bot-message {
+            margin: 5px 0;
+        }
+
+        .user-message {
+            text-align: right;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="chat-box">
+        <div class="messages" id="chat-box"></div>
+        <form id="chat-form" onsubmit="return sendMessage()">
+            <input type="text" id="message" placeholder="Type a message..." autocomplete="off" required />
+            <button type="submit">Send</button>
+        </form>
+    </div>
+    <script>
+        function sendMessage() {
+            const message = document.getElementById("message").value;
+            const chatBox = document.getElementById("chat-box");
+
+            // Append user message to chat
+            chatBox.innerHTML += `<div class="user-message"><strong>You:</strong> ${message}</div>`;
+
+            // Send message to the backend
+            fetch("/get", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: `msg=${message}`
+            })
+                .then(response => response.text())
+                .then(data => {
+                    // Append chatbot response to chat
+                    chatBox.innerHTML += `<div class="bot-message"><strong>Bot:</strong> ${data}</div>`;
+                    document.getElementById("message").value = ""; // Clear input
+                    chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
+                });
+            return false;
+        }
+    </script>
+</body>
+
+</html>
