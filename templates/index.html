@@ -40,6 +40,18 @@
         button {
             padding: 10px;
         }
+
+        .suggestions {
+            margin-top: 20px;
+        }
+
+        .suggestions button {
+            margin: 5px;
+            padding: 8px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -51,7 +63,25 @@
             <button type="submit">Send</button>
         </form>
     </div>
+
+    <div class="suggestions" id="suggestions">
+        <h3>Suggested Questions:</h3>
+        <div id="suggested-questions">
+            <!-- Suggested questions will be populated here -->
+            {% for question in suggested_questions %}
+            <button onclick="setMessage('{{ question }}')">{{ question }}</button>
+            {% endfor %}
+        </div>
+    </div>
+
     <script>
+        // Function to set the input field to the clicked suggestion
+        function setMessage(message) {
+            document.getElementById("message").value = message;
+            sendMessage();  // Automatically send the selected question
+        }
+
+        // Send message to the backend
         function sendMessage() {
             const message = document.getElementById("message").value;
             const chatBox = document.getElementById("chat-box");
@@ -72,6 +102,7 @@
                     document.getElementById("message").value = ""; // Clear input
                     chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll
                 });
+
             return false;
         }
     </script>
